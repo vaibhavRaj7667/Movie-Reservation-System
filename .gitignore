@@ -1,0 +1,30 @@
+# Python/Django (backend)
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.log
+db.sqlite3
+media/
+staticfiles/
+.env
+*/migrations/__pycache__/
+*/migrations/*.pyc
+*/migrations/*.pyo
+*/migrations/*.pyd
+
+# Node/React/Angular (frontend)
+node_modules/
+build/
+dist/
+.env.local
+.env.development
+.env.production
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
