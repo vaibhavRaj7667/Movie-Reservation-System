@@ -1,14 +1,52 @@
 import React,{useState, useEffect} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-
-const textcount =0
+import { ToastContainer, toast } from 'react-toastify'
 
 const Login = () => {
     const navigate = useNavigate()
     const {register, handleSubmit, formState} = useForm()
     const {errors} = formState;
-    const onSubmit =(data)=>console.log(data)
+    const [logins, setlogins] = useState(true)
+
+    const onSubmit = async (data) => {
+    try {
+        setlogins(false)
+        const response = await fetch("http://127.0.0.1:8000/api/token/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        
+        const result = await response.json()
+        if (!response.ok) {
+            toast.error(result.detail || "Login failed. Please check your credentials.")
+            setlogins(true)
+            return
+            
+        }
+        setlogins(!logins)
+    
+        localStorage.setItem('access', result.access)
+        localStorage.setItem('refresh', result.refresh)
+        toast.success("Login successful!")
+
+        setTimeout(() => {
+                navigate('/home')
+            }, 1000)
+
+
+
+        console.log("Login successful:", result);
+    } catch (error) {
+        toast.error("An error occurred. Please try again.")
+        console.error("Login failed:", error);
+    }
+}
+
+
 
 
   return (
@@ -25,12 +63,12 @@ const Login = () => {
                         <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
                             <input
                                 type="email"
-                                placeholder="Email"
-                                {...register("email", { required: { value: true, message: "Email is required" } })}
+                                placeholder="email"
+                                {...register("username", { required: { value: true, message: "Email is required" } })}
                                 
                                 className="px-4 py-2 rounded bg-gray-800 text-white focus:outline-none"
                             />
-                            <p className="text-red-400 text-sm">{errors.email?.message}</p>
+                            <p className="text-red-400 text-sm">{errors.username?.message}</p>
                             <input
                                 type="password"
                                 placeholder="Password"
@@ -38,15 +76,18 @@ const Login = () => {
                                 className="px-4 py-2 rounded bg-gray-800 text-white focus:outline-none"
                             />
                             <p className="text-red-400 text-sm">{errors.password?.message}</p>
+
                             <button
                                 type="submit"
                                 className="bg-amber-500 text-white font-bold py-2 rounded hover:bg-amber-600 transition"
                             >
-                                Login
+                                {logins?"Login":"Logging in..."}
                             </button>
                         </form>
                     </div>
 
+                    
+                     <ToastContainer />
                 </div>
 
             </div>
