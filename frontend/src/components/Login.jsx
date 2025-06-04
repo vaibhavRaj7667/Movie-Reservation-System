@@ -58,7 +58,7 @@ const Login = () => {
                     <h1 className="text-amber-50 text-2xl font-bold">
                         Login to your account
                     </h1>
-
+                   
                   <div className="mt-6">
                         <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
                             <input

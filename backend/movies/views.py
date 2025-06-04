@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from movies.serializer import MovieSerializer
+from movies.serializer import MovieSerializer, GenereSerializer
 from rest_framework.views import APIView
-from movies.models import Movies
+from movies.models import Movies,Genre
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
@@ -10,9 +10,16 @@ from django.shortcuts import get_object_or_404
 
 class moviesView(APIView):
     def get(self, request):
-        movie = Movies.objects.all()
-        serializer = MovieSerializer(movie, many = True)
-        return Response({'data':serializer.data})
+        # genres = request.data.get('genres', None) 
+        genres = request.query_params.get('genres', None) 
+        if not genres:
+            movie = Movies.objects.all()
+           
+        else:
+            movie = Movies.objects.filter(genres__name__icontains=genres)
+           
+        serializer = MovieSerializer(movie, many=True)
+        return Response({'data': serializer.data})
     
     @swagger_auto_schema(request_body=MovieSerializer)
     def post(self, request):
@@ -46,4 +53,11 @@ class moviesUpadteView(APIView):
         movie = get_object_or_404(Movies, pk=pk)
         movie.delete()
         return Response(status=status.HTTP_200_OK)
+    
+
+class genereView(APIView):
+    def get(self, request):
+        genere = Genre.objects.all()
+        serializer = GenereSerializer(genere, many=True)
+        return Response({'status':status.HTTP_200_OK,'data':serializer.data})
         
