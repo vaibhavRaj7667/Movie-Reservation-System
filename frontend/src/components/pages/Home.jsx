@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../custom/Navbar';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [movie, setMovie] = useState([]);
   const [error, setError] = useState(false);
   const [genres, setGenres] = useState([]); 
   const [selectedGenre, setSelectedGenre] = useState('');
-
+  const urls = import.meta.env.VITE_API_URL
+  const navigate = useNavigate()
+  
   useEffect(() => {
    
     const fetchGenres = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/genres/', {
+        const response = await fetch(`${urls}/genres/`, {
           method: 'GET',
+           headers: {
+              "Authorization": `Bearer ${localStorage.getItem('access')}`
+            }
         });
         const data = await response.json();
         setGenres(data.data);
       } catch (error) {
+        setError(true)
         console.error('Error fetching genres:', error);
       }
     };
@@ -29,9 +36,12 @@ const Home = () => {
     const fetchMovies = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/movies/?genres=${selectedGenre}`,
+          `${urls}/movies/?genres=${selectedGenre}`,
           {
             method: 'GET',
+             headers: {
+              "Authorization": `Bearer ${localStorage.getItem('access')}`
+            }
           }
         );
         const data = await response.json();
@@ -44,6 +54,8 @@ const Home = () => {
 
     fetchMovies();
   }, [selectedGenre]); 
+
+
 
   return (
     <div className="min-h-screen bg-[#213448]">
@@ -74,11 +86,12 @@ const Home = () => {
             <p className="text-gray-300 mt-2">Something went wrong. Please try again later.</p>
           </div>
         ) : (
-          <div className="flex flex-wrap justify-center gap-8 mt-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mt-8 justify-items-center">
             {movie.map((movie, index) => (
               <div
                 key={index}
                 className="bg-gray-900 rounded-lg shadow-lg w-85 flex flex-col items-center"
+                onClick={()=> navigate(`/movies/${movie.id}`)}
               >
                 <img
                   src={movie.poster}
