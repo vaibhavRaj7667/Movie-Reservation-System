@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from movies.models import Movies, Genre
+from movies.models import Movies, Genre, Show
 
 
 class GenereSerializer(serializers.ModelSerializer):
@@ -36,4 +36,13 @@ class MovieSerializer(serializers.ModelSerializer):
         instance.save()
         if genres is not None:
             instance.genres.set(genres)
-        return instance
+        return 
+    
+
+
+class ShowsSerializer(serializers.ModelSerializer):
+    movie = serializers.CharField(source='movie.title')  # Use the movie's title instead of its ID
+
+    class Meta:
+        model = Show
+        fields = '__all__'

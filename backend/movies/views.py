@@ -1,13 +1,13 @@
 from django.shortcuts import render
-from movies.serializer import MovieSerializer, GenereSerializer
+from movies.serializer import MovieSerializer, GenereSerializer,ShowsSerializer
 from rest_framework.views import APIView
-from movies.models import Movies,Genre
+from movies.models import Movies,Genre, Show
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.decorators import api_view
 from django.contrib.auth import logout
 
@@ -68,6 +68,17 @@ class genereView(APIView):
         genere = Genre.objects.all()
         serializer = GenereSerializer(genere, many=True)
         return Response({'status':status.HTTP_200_OK,'data':serializer.data})
+    
+class showView(APIView):
+
+    permission_classes=[AllowAny]
+
+    def get(self, request, title):
+        myshows = Show.objects.filter(movie__title__iexact=title) #case insensitive filtering 
+        if not myshows.exists():
+             return Response({'message': 'No shows found for this movie.'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ShowsSerializer(myshows, many = True)
+        return Response({'data':serializer.data})
     
 @api_view(["GET"])
 def logoutView(request):

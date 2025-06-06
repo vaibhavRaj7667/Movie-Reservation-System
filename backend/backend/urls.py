@@ -5,7 +5,7 @@ from django.urls import path, re_path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from authentications.views import signUpView
 from rest_framework import permissions
-from movies.views import moviesView, moviesUpadteView,genereView, logoutView
+from movies.views import moviesView, moviesUpadteView,genereView, logoutView,showView
 
 
 schema_view = get_schema_view(
@@ -30,6 +30,7 @@ urlpatterns = [
     path('update/<int:pk>/', moviesUpadteView.as_view()),
     path('genres/',genereView.as_view() ),
     path('logout/',logoutView),
+    path('shows/<str:title>/',showView.as_view()),
 
 
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

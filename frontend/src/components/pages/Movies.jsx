@@ -7,6 +7,38 @@ function Movies() {
   const [loading, setLoading] = useState(true);
   const urls = import.meta.env.VITE_API_URL;
   const { pk } = useParams();
+  const [Myshows, setMyshows] = useState([])
+  
+  useEffect(()=>{
+    const fetchShows = async()=>{
+
+      try {
+        const response = await fetch(`${urls}/shows/${Mymovies.title}/`,{
+          method:"GET",
+           headers: {
+              Authorization: `Bearer ${localStorage.getItem('access')}`,
+            },
+        })
+  
+        const Data = await response.json()
+        setMyshows(Data.data)
+        console.log(Data.data)
+        
+      } catch (error) {
+        console.log(`error--> ${error}`)
+      }
+    }
+
+     if (Mymovies.title) {
+    fetchShows();
+      }
+
+    
+  },[Mymovies])
+
+
+
+
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -133,6 +165,61 @@ function Movies() {
               </div>
             </div>
           </div>
+
+          <div>
+                  <div className="text-2xl font-bold text-amber-50 mt-5">
+                    <span>
+                      <p>Shows</p>
+                    </span>
+                  </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 rounded-2xl p-6">
+                  {Myshows ? (<>
+                  
+                 
+                  
+                
+
+
+                  {Myshows.map((show) => (
+                    <div
+                      key={show.id}
+                      className="bg-gray-800 text-amber-50 rounded-lg shadow-lg p-4 flex flex-col justify-between"
+                    >
+                      <div>
+                        <h3 className="text-lg font-bold">{show.movie}</h3>
+                        <p className="mt-2">
+                          <span className="font-semibold">Show Time:</span>{" "}
+                          {new Date(show.show_time).toLocaleString("en-US", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })}
+                        </p>
+                        <p className="mt-2">
+                          <span className="font-semibold">Available Seats:</span>{" "}
+                          {show.available_seats}
+                        </p>
+                      </div>
+                      <button
+                        className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300"
+                        // onClick={() => handleBookTicket(show.id)}
+                      >
+                        Book Ticket
+                      </button>
+                    </div>
+                  ))}
+
+                   </>):
+                   (<>
+                    <p>show not listed yet</p>
+                  
+                  </>)}
+                </div>
+              </div>
+
+
+
+
         </div>
       </div>
     </div>
