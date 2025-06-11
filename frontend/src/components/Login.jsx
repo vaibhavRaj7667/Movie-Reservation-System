@@ -18,9 +18,10 @@ const Login = () => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+            credentials: "include",
         });
         
-        const result = await response.json()
+        // const result = await response.json()
         if (!response.ok) {
             toast.error(result.detail || "Login failed. Please check your credentials.")
             setlogins(true)
@@ -29,8 +30,8 @@ const Login = () => {
         }
         setlogins(!logins)
     
-        localStorage.setItem('access', result.access)
-        localStorage.setItem('refresh', result.refresh)
+        // localStorage.setItem('access', result.access)
+        // localStorage.setItem('refresh', result.refresh)
         toast.success("Login successful!")
 
         setTimeout(() => {
@@ -39,7 +40,7 @@ const Login = () => {
 
 
 
-        console.log("Login successful:", result);
+        console.log("Login successful:");
     } catch (error) {
         toast.error("An error occurred. Please try again.")
         console.error("Login failed:", error);

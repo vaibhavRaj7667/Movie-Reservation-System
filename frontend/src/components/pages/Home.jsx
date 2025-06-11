@@ -1,29 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../custom/Navbar';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Home = () => {
-  const [movie, setMovie] = useState([]);
+   const [movie, setMovie] = useState([]);
   const [error, setError] = useState(false);
   const [genres, setGenres] = useState([]); 
   const [selectedGenre, setSelectedGenre] = useState('');
-  const urls = import.meta.env.VITE_API_URL
-  const navigate = useNavigate()
+  const urls = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
   
   useEffect(() => {
-   
     const fetchGenres = async () => {
       try {
-        const response = await fetch(`${urls}/genres/`, {
-          method: 'GET',
-           headers: {
-              "Authorization": `Bearer ${localStorage.getItem('access')}`
-            }
+        const response = await axios.get(`${urls}/genres/`, {
+          withCredentials: true
         });
-        const data = await response.json();
-        setGenres(data.data);
+        setGenres(response.data.data);
       } catch (error) {
-        setError(true)
+        setError(true);
         console.error('Error fetching genres:', error);
       }
     };
@@ -32,20 +28,15 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-   
     const fetchMovies = async () => {
       try {
-        const response = await fetch(
+        const response = await axios.get(
           `${urls}/movies/?genres=${selectedGenre}`,
           {
-            method: 'GET',
-             headers: {
-              "Authorization": `Bearer ${localStorage.getItem('access')}`
-            }
+            withCredentials: true
           }
         );
-        const data = await response.json();
-        setMovie(data.data);
+        setMovie(response.data.data);
       } catch (error) {
         console.error('Error fetching movies:', error);
         setError(true);
@@ -53,7 +44,7 @@ const Home = () => {
     };
 
     fetchMovies();
-  }, [selectedGenre]); 
+  }, [selectedGenre]);
 
 
 

@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from authentications.views import signUpView
 from rest_framework import permissions
 from movies.views import moviesView, moviesUpadteView,genereView, logoutView,showView
+from authentications.views import customTokenObtainPairView, customTokenRefreshView,LogoutView,LogoutView
 
 
 schema_view = get_schema_view(
@@ -23,13 +24,14 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/', customTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', customTokenRefreshView.as_view(), name='token_refresh'),
+    path('logout/',LogoutView.as_view(),name="LogoutView"),
     path('test/',signUpView.as_view()),
     path('movies/',moviesView.as_view()),
     path('update/<int:pk>/', moviesUpadteView.as_view()),
     path('genres/',genereView.as_view() ),
-    path('logout/',logoutView),
+    path('logout/',LogoutView.as_view()),
     path('shows/<str:title>/',showView.as_view()),
 
 

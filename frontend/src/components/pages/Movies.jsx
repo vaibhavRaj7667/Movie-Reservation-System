@@ -1,56 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '../custom/Navbar';
+import axios from 'axios';
 
 function Movies() {
-  const [Mymovies, SetMymovies] = useState({});
+ const [Mymovies, SetMymovies] = useState({});
   const [loading, setLoading] = useState(true);
   const urls = import.meta.env.VITE_API_URL;
   const { pk } = useParams();
-  const [Myshows, setMyshows] = useState([])
+  const [Myshows, setMyshows] = useState([]);
   
-  useEffect(()=>{
-    const fetchShows = async()=>{
-
+  useEffect(() => {
+    const fetchShows = async () => {
       try {
-        const response = await fetch(`${urls}/shows/${Mymovies.title}/`,{
-          method:"GET",
-           headers: {
-              Authorization: `Bearer ${localStorage.getItem('access')}`,
-            },
-        })
-  
-        const Data = await response.json()
-        setMyshows(Data.data)
-        console.log(Data.data)
-        
+        const response = await axios.get(`${urls}/shows/${Mymovies.title}/`, {
+          withCredentials: true
+        });
+        setMyshows(response.data.data);
+        console.log(response.data.data);
       } catch (error) {
-        console.log(`error--> ${error}`)
+        console.log(`error--> ${error}`);
       }
+    };
+
+    if (Mymovies.title) {
+      fetchShows();
     }
-
-     if (Mymovies.title) {
-    fetchShows();
-      }
-
-    
-  },[Mymovies])
-
-
-
-
+  }, [Mymovies]);
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch(`${urls}/update/${pk}`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access')}`,
-          },
+        const response = await axios.get(`${urls}/update/${pk}`, {
+          withCredentials: true
         });
-        const Data = await response.json();
-        SetMymovies(Data.data);
+        SetMymovies(response.data.data);
         setLoading(false);
       } catch (error) {
         console.error(error);

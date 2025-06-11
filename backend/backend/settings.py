@@ -61,10 +61,13 @@ MIDDLEWARE = [
 ]
 
 
-CORS_ALLOW_ALL_ORIGINS = True
+
+
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Adjust based on frontend URL
+    
 ]
 
 
@@ -93,7 +96,7 @@ REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
     
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'authentications.authentication.CookiesJWTAuthentication',
     ),
       'DEFAULT_PERMISSION_CLASSES': (
              'rest_framework.permissions.IsAuthenticated',
@@ -152,8 +155,37 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SIMPLE_JWT={
+# SIMPLE_JWT={
+#     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+#     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+#     'AUTH_COOKIE': 'access',  # Cookie name for the access token
+#     'AUTH_COOKIE_REFRESH': 'refresh',  # Cookie name for the refresh token
+#     # 'AUTH_HEADER_TYPES': ('Bearer'),
+#     'AUTH_COOKIE_SECURE': False,  # Set to True if using HTTPS
+#     'AUTH_COOKIE_HTTP_ONLY': True,  # Make the cookie HTTP only
+# }
+
+# SESSION_COOKIE_SECURE = False  # Set to True in production (HTTPS)
+# SESSION_COOKIE_SAMESITE = 'Lax'  # or 'None' if using cross-site
+# CSRF_COOKIE_SECURE = False      # Set to True in production
+# CSRF_COOKIE_SAMESITE = 'Lax'    # or 'None' if using cross-site
+
+
+# settings.py
+
+SESSION_COOKIE_SAMESITE = 'Lax'  # Change from 'None' to 'Lax'
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'Lax'     # Change from 'None' to 'Lax'
+CSRF_COOKIE_SECURE = False
+
+
+# SimpleJWT settings
+SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer'),
+    'AUTH_COOKIE': 'access',
+    'AUTH_COOKIE_REFRESH': 'refresh',
+    'AUTH_COOKIE_SECURE': False,  # Must match SESSION_COOKIE_SECURE
+    'AUTH_COOKIE_HTTP_ONLY': True,
+    'AUTH_COOKIE_SAMESITE': 'Lax',  # Must match other SameSite settings
 }

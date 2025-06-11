@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from movies.serializer import MovieSerializer, GenereSerializer,ShowsSerializer
 from rest_framework.views import APIView
 from movies.models import Movies,Genre, Show
@@ -6,16 +5,19 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from django.shortcuts import get_object_or_404
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated,AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view
 from django.contrib.auth import logout
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
+
+
 
 class moviesView(APIView):
     
-    # authentication_classes = [JWTAuthentication]  
-    # permission_classes = [IsAuthenticated]
-
+    # @method_decorator(cache_page(60*1))  # Cache for 1 minutes
+    # @method_decorator(vary_on_cookie)  # Vary cache based on cookies
     def get(self, request):
         # genres = request.data.get('genres', None) 
         genres = request.query_params.get('genres', None) 

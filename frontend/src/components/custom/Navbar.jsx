@@ -1,8 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify'
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const urls = import.meta.env.VITE_API_URL;
+
+  const handelLogout = async()=>{
+    try {
+      const resposne = await axios.post(`${urls}/logout/`)
+
+      toast.success("logout succesfull")
+
+      console.log(`${resposne.data} success`)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <nav className="bg-gray-900 px-6 py-3 flex items-center justify-between shadow-md">
@@ -69,12 +85,15 @@ const Navbar = () => {
         <li className="sm:py-0 py-2">
           <Link
             to="#"
+            onClick={()=>handelLogout()}
             className="block text-white hover:text-yellow-400 transition-colors px-6 sm:px-0"
           >
             Logout
           </Link>
         </li>
+         <ToastContainer/>
       </ul>
+     
     </nav>
   );
 };
