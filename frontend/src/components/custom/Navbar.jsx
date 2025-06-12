@@ -21,7 +21,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-gray-900 px-6 py-3 flex items-center justify-between shadow-md">
+    <nav className="bg-gray-900 px-6 py-3 flex items-center justify-between shadow-md z-50">
       {/* Logo */}
       <div>
         <Link to="/home" className="text-2xl font-bold text-white tracking-wide">

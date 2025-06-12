@@ -1,0 +1,262 @@
+import React, { useState } from 'react';
+import Navbar from '../custom/Navbar';
+
+const TheaterSeatingChart = ({ totalSeats = 100, bookedSeats = ['E4'] }) => {
+  // Initialize seating data based on total seats
+  const initializeSeats = () => {
+    const seats = [];
+    
+    // Calculate optimal rows and distribution based on total seats
+    const calculateLayout = (total) => {
+      if (total <= 50) {
+        // Small theater: 5-7 rows
+        return { rows: 6, distribution: [0.15, 0.15, 0.20, 0.20, 0.15, 0.15] };
+      } else if (total <= 100) {
+        // Medium theater: 7-8 rows
+        return { rows: 8, distribution: [0.14, 0.14, 0.14, 0.14, 0.11, 0.11, 0.11, 0.11] };
+      } else if (total <= 200) {
+        // Large theater: 10 rows
+        return { rows: 10, distribution: [0.12, 0.11, 0.11, 0.10, 0.10, 0.10, 0.10, 0.09, 0.09, 0.08] };
+      } else {
+        // Very large theater: 12 rows
+        return { rows: 12, distribution: [0.10, 0.09, 0.09, 0.09, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.07, 0.07] };
+      }
+    };
+    
+    const layout = calculateLayout(totalSeats);
+    const rowCounts = layout.distribution.map(percent => Math.round(totalSeats * percent));
+    
+    // Adjust to match exact total
+    const currentTotal = rowCounts.reduce((sum, count) => sum + count, 0);
+    const difference = totalSeats - currentTotal;
+    
+    // Distribute the difference across middle rows
+    for (let i = 0; i < Math.abs(difference); i++) {
+      const middleIndex = Math.floor(layout.rows / 2) + (i % 3) - 1;
+      if (difference > 0) {
+        rowCounts[middleIndex]++;
+      } else if (rowCounts[middleIndex] > 1) {
+        rowCounts[middleIndex]--;
+      }
+    }
+    
+    // Define seat types based on row position
+    const getSeatType = (rowIndex, totalRows) => {
+      const frontThird = Math.floor(totalRows / 3);
+      const backThird = totalRows - Math.floor(totalRows / 3);
+      
+      if (rowIndex < frontThird) {
+        return { type: 'silver', price: 15, color: 'bg-gray-400' };
+      } else if (rowIndex >= backThird) {
+        return { type: 'premium', price: 25, color: 'bg-red-800' };
+      } else {
+        return { type: 'gold', price: 20, color: 'bg-yellow-500' };
+      }
+    };
+    
+    rowCounts.forEach((seatCount, rowIndex) => {
+      const rowSeats = [];
+      const rowLetter = String.fromCharCode(65 + rowIndex);
+      const seatTypeInfo = getSeatType(rowIndex, layout.rows);
+      
+      for (let seatIndex = 0; seatIndex < seatCount; seatIndex++) {
+        const seatNumber = seatIndex + 1;
+        const seatId = `${rowLetter}${seatNumber}`;
+        
+        // Check if seat is booked from props
+        const isUnavailable = bookedSeats.includes(seatId);
+        
+        rowSeats.push({
+          id: seatId,
+          row: rowLetter,
+          number: seatNumber,
+          type: seatTypeInfo.type,
+          price: seatTypeInfo.price,
+          color: seatTypeInfo.color,
+          isSelected: false,
+          isUnavailable,
+        });
+      }
+      seats.push(rowSeats);
+    });
+    
+    return seats;
+  };
+
+  const [seats, setSeats] = useState(initializeSeats());
+  const [selectedSeats, setSelectedSeats] = useState([]);
+
+  const handleSeatClick = (rowIndex, seatIndex) => {
+    const seat = seats[rowIndex][seatIndex];
+    
+    if (seat.isUnavailable) return;
+
+    setSeats(prevSeats => {
+      const newSeats = [...prevSeats];
+      newSeats[rowIndex] = [...newSeats[rowIndex]];
+      newSeats[rowIndex][seatIndex] = {
+        ...newSeats[rowIndex][seatIndex],
+        isSelected: !newSeats[rowIndex][seatIndex].isSelected
+      };
+      return newSeats;
+    });
+
+    setSelectedSeats(prev => {
+      if (seat.isSelected) {
+        return prev.filter(s => s !== seat.id);
+      } else {
+        return [...prev, seat.id];
+      }
+    });
+  };
+
+  const getSeatClassName = (seat) => {
+    let baseClass = "w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs font-medium";
+    
+    if (seat.isUnavailable) {
+      return `${baseClass} bg-gray-300 border-gray-400 cursor-not-allowed opacity-50`;
+    }
+    
+    if (seat.isSelected) {
+      return `${baseClass} bg-green-500 border-green-600 text-white shadow-lg transform scale-105`;
+    }
+    
+    return `${baseClass} ${seat.color} border-gray-600 text-white hover:transform hover:scale-110 hover:shadow-md`;
+  };
+
+  const getTotalPrice = () => {
+    return seats.flat()
+      .filter(seat => seat.isSelected)
+      .reduce((total, seat) => total + seat.price, 0);
+  };
+
+  const getSelectedSeatsInfo = () => {
+    return seats.flat()
+      .filter(seat => seat.isSelected)
+      .map(seat => ({ id: seat.id, price: seat.price }));
+  };
+
+  return (
+    <div className="mx-auto p-4 bg-gray-800 text-white full-h-screen">
+      <Navbar/>
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-2xl md:text-4xl font-bold mb-2">Select Your Seats</h1>
+        <p className="text-gray-300 mb-4">Theater Capacity: {totalSeats} seats</p>
+        <div className="bg-gray-800 py-3 px-6 rounded-lg inline-block">
+          <div className="text-lg font-semibold">🎬 SCREEN</div>
+          <div className="w-32 sm:w-48 md:w-64 h-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded mt-2"></div>
+        </div>
+      </div>
+
+      {/* Seating Chart */}
+      <div className="mb-8 overflow-x-auto">
+        <div className="flex flex-col items-center space-y-2 sm:space-y-3 min-w-max px-4">
+          {seats.map((row, rowIndex) => (
+            <div key={rowIndex} className="flex items-center space-x-1 sm:space-x-2">
+              {/* Row Label */}
+              <div className="w-6 sm:w-8 text-center font-bold text-sm sm:text-base">
+                {String.fromCharCode(65 + rowIndex)}
+              </div>
+              
+              {/* Seats */}
+              <div className="flex space-x-1 sm:space-x-2">
+                {row.map((seat, seatIndex) => (
+                  <button
+                    key={seat.id}
+                    className={getSeatClassName(seat)}
+                    onClick={() => handleSeatClick(rowIndex, seatIndex)}
+                    disabled={seat.isUnavailable}
+                    title={seat.isUnavailable ? 'Already Booked' : `${seat.id} - ${seat.price}`}
+                  >
+                    <span className="hidden sm:inline text-xs">
+                      {seat.number}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              
+              {/* Row Label (Right) */}
+              <div className="w-6 sm:w-8 text-center font-bold text-sm sm:text-base">
+                {String.fromCharCode(65 + rowIndex)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="bg-gray-800 rounded-lg p-4 sm:p-6 mb-6">
+        <h3 className="text-lg sm:text-xl font-bold mb-4 text-center">Seat Types & Pricing</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-red-800 rounded-t-lg border-2 border-gray-600"></div>
+            <div>
+              <div className="font-semibold">Premium</div>
+              <div className="text-sm text-gray-300">250 Rs</div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-yellow-500 rounded-t-lg border-2 border-gray-600"></div>
+            <div>
+              <div className="font-semibold">Gold</div>
+              <div className="text-sm text-gray-300">200 Rs</div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gray-400 rounded-t-lg border-2 border-gray-600"></div>
+            <div>
+              <div className="font-semibold">Silver</div>
+              <div className="text-sm text-gray-300">150 Rs</div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gray-300 rounded-t-lg border-2 border-gray-400 opacity-50"></div>
+            <div>
+              <div className="font-semibold">Already Booked</div>
+              <div className="text-sm text-gray-300">N/A</div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Selection Status */}
+        <div className="mt-6 pt-4 border-t border-gray-700">
+          <div className="flex items-center space-x-3 mb-2">
+            <div className="w-8 h-8 bg-green-500 rounded-t-lg border-2 border-green-600"></div>
+            <div>
+              <div className="font-semibold">Selected</div>
+              <div className="text-sm text-gray-300">Your choice</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Selection Summary */}
+      {selectedSeats.length > 0 && (
+        <div className="bg-green-800 rounded-lg p-4 sm:p-6">
+          <h3 className="text-lg sm:text-xl font-bold mb-3">Your Selection</h3>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-3 sm:mb-0">
+              <div className="font-semibold">
+                Seats: {getSelectedSeatsInfo().map(seat => seat.id).join(', ')}
+              </div>
+              <div className="text-sm text-green-200">
+                {selectedSeats.length} seat{selectedSeats.length !== 1 ? 's' : ''} selected
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold">
+                Total: ${getTotalPrice()}
+              </div>
+              <button className="mt-2 bg-white text-green-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                Continue to Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default TheaterSeatingChart;
