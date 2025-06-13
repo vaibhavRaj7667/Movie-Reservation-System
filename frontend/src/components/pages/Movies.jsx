@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '../custom/Navbar';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Movies() {
  const [Mymovies, SetMymovies] = useState({});
@@ -9,6 +10,7 @@ function Movies() {
   const urls = import.meta.env.VITE_API_URL;
   const { pk } = useParams();
   const [Myshows, setMyshows] = useState([]);
+  const navigate = useNavigate()
   
   useEffect(() => {
     const fetchShows = async () => {
@@ -169,6 +171,7 @@ function Movies() {
                     <div
                       key={show.id}
                       className="bg-gray-800 text-amber-50 rounded-lg shadow-lg p-4 flex flex-col justify-between"
+                      onClick={()=> navigate(`/booking/`,{state:{total: show.available_seats}})}
                     >
                       <div>
                         <h3 className="text-lg font-bold">{show.movie}</h3>

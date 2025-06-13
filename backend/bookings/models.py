@@ -9,15 +9,19 @@ class Booking(models.Model):
     movie = models.ForeignKey(Movies, on_delete=models.CASCADE, related_name='bookings')
     show_time = models.ForeignKey(Show, on_delete=models.CASCADE, related_name='bookings')
     booking_time = models.DateTimeField(auto_now_add=True)
-
+    seat_number = models.JSONField(default=list)
+    price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    is_booked = models.BooleanField(default=False)
+    hold_timestamp = models.DateTimeField(null=True, blank=True)
+    
     def __str__(self):
         return f"{self.user.username} - {self.movie.title} at {self.show_time}"
 
-class Seat(models.Model):
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='seats')
-    seat_number = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
+# class Seat(models.Model):
+#     booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='seats')
+#     seat_number = models.CharField(max_length=100)
+#     price = models.DecimalField(max_digits=8, decimal_places=2)
 
-    def __str__(self):
-        return f"Seat {self.seat_number} for {self.booking}"
+#     def __str__(self):
+#         return f"Seat {self.seat_number} for {self.booking}"
     

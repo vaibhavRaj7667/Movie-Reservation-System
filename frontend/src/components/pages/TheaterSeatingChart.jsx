@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import Navbar from '../custom/Navbar';
+ import { useLocation } from 'react-router-dom';
 
-const TheaterSeatingChart = ({ totalSeats = 100, bookedSeats = ['E4'] }) => {
+const TheaterSeatingChart = () => {
   // Initialize seating data based on total seats
+  const location = useLocation()
+
+  const{total} = location.state || {}
+  
+  const totalSeats = total
+  const bookedSeats=['']
+
   const initializeSeats = () => {
     const seats = [];
     
