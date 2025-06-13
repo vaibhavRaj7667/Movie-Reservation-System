@@ -46,6 +46,19 @@ const Home = () => {
     fetchMovies();
   }, [selectedGenre]);
 
+  const formatDuration = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours}h ${mins}m`;
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
 
 
   return (
@@ -99,8 +112,8 @@ const Home = () => {
                 </div>
 
                 <div className="flex justify-between w-full px-2 mb-2">
-                  <span className="text-gray-400 text-xs">{movie.duration}</span>
-                  <span className="text-gray-400 text-xs">{movie.release_date}</span>
+                  <span className="text-gray-400 text-xs">{formatDuration(movie.duration)}</span>
+                  <span className="text-gray-400 text-xs">{formatDate(movie.release_date)}</span>
                 </div>
               </div>
             ))}
