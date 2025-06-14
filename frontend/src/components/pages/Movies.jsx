@@ -37,6 +37,7 @@ function Movies() {
           withCredentials: true
         });
         SetMymovies(response.data.data);
+        // console.log(response.data.data)
         setLoading(false);
       } catch (error) {
         console.error(error);

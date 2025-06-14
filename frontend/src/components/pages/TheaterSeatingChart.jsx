@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../custom/Navbar';
- import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const TheaterSeatingChart = () => {
   // Initialize seating data based on total seats
@@ -93,6 +93,12 @@ const TheaterSeatingChart = () => {
 
   const [seats, setSeats] = useState(initializeSeats());
   const [selectedSeats, setSelectedSeats] = useState([]);
+  // New state for storing seat numbers and total price
+  const [bookingData, setBookingData] = useState({
+    seatNumbers: [],
+    totalPrice: 0
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSeatClick = (rowIndex, seatIndex) => {
     const seat = seats[rowIndex][seatIndex];
@@ -110,11 +116,23 @@ const TheaterSeatingChart = () => {
     });
 
     setSelectedSeats(prev => {
-      if (seat.isSelected) {
-        return prev.filter(s => s !== seat.id);
-      } else {
-        return [...prev, seat.id];
-      }
+      const updatedSeats = seat.isSelected 
+        ? prev.filter(s => s !== seat.id)
+        : [...prev, seat.id];
+      
+      // Update booking data whenever seats change
+      const selectedSeatsData = seats.flat().filter(s => 
+        updatedSeats.includes(s.id) || (s.id === seat.id && !seat.isSelected)
+      );
+      
+      const totalPrice = selectedSeatsData.reduce((total, s) => total + s.price, 0);
+      
+      setBookingData({
+        seatNumbers: updatedSeats,
+        totalPrice: totalPrice
+      });
+      
+      return updatedSeats;
     });
   };
 
@@ -142,6 +160,47 @@ const TheaterSeatingChart = () => {
     return seats.flat()
       .filter(seat => seat.isSelected)
       .map(seat => ({ id: seat.id, price: seat.price }));
+  };
+
+  // Checkout function with POST request
+  const handleCheckout = async () => {
+    if (bookingData.seatNumbers.length === 0) {
+      alert('Please select at least one seat');
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          seatNumbers: bookingData.seatNumbers,
+          totalPrice: bookingData.totalPrice
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Booking successful:', result);
+        alert(`Booking confirmed! Seats: ${bookingData.seatNumbers.join(', ')} | Total: $${bookingData.totalPrice}`);
+        
+        // Reset the booking after successful checkout
+        setSelectedSeats([]);
+        setBookingData({ seatNumbers: [], totalPrice: 0 });
+        setSeats(initializeSeats());
+      } else {
+        throw new Error('Failed to process booking');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to process booking. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -256,11 +315,25 @@ const TheaterSeatingChart = () => {
               <div className="text-2xl font-bold">
                 Total: ${getTotalPrice()}
               </div>
-              <button className="mt-2 bg-white text-green-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                Continue to Checkout
+              <button 
+                className="mt-2 bg-white text-green-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleCheckout}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Processing...' : 'Continue to Checkout'}
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Debug Info - Remove in production */}
+      {bookingData.seatNumbers.length > 0 && (
+        <div className="mt-4 p-4 bg-gray-700 rounded-lg">
+          <h4 className="font-bold mb-2">Booking Data:</h4>
+          <pre className="text-sm">
+            {JSON.stringify(bookingData, null, 2)}
+          </pre>
         </div>
       )}
     </div>

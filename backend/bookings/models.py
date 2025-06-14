@@ -12,10 +12,10 @@ class Booking(models.Model):
     seat_number = models.JSONField(default=list)
     price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     is_booked = models.BooleanField(default=False)
-    hold_timestamp = models.DateTimeField(null=True, blank=True)
+    hold_timestamp = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"{self.user.username} - {self.movie.title} at {self.show_time}"
+        return f"{self.user.username} - {self.movie.title} at {self.show_time} time {self.hold_timestamp}"
 
 # class Seat(models.Model):
 #     booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='seats')
