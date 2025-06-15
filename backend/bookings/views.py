@@ -5,16 +5,27 @@ from rest_framework.permissions import AllowAny
 from movies.models import Show
 from .serializer import bookingSerializer
 from movies.models import Movies
-
+from .models import Booking
+import itertools
+from rest_framework.decorators import api_view
 
 class ticketBooking(APIView):
-    
+
     permission_classes=[AllowAny]
+    def get(self, request):
+        booking = Booking.objects.values_list('seat_number', flat=True)
+        seat_number_list = list(booking)
+        flat_list = list(itertools.chain(*seat_number_list))
+        print(flat_list)
+        return Response({'booked_seats':flat_list}, status=status.HTTP_200_OK)
+    
+    
     def post(self, request):
 
         Data = request.data
 
-        user = Data.get('user')
+        user = request.user
+        print(user)
         show_id = Data.get('show_time')
         movie = Data.get('movie')
         seat_number = Data.get('seat_number')
@@ -32,12 +43,26 @@ class ticketBooking(APIView):
             
         })
 
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
         
 
+@api_view(['POST'])
+def bookedSeatsView(request):
+    if request.method == "POST":
+        data = request.data.get('ticketId')
+        if not data:
+            return Response({'message':"missing ticket id"}, status=status.HTTP_400_BAD_REQUEST)
 
+        bookings = Booking.objects.filter(show_time_id=data)
+
+        seat_numbers = []
+        for booking in bookings:
+            seat_numbers.extend(booking.seat_number)
+
+        
+    return Response({'seat_numbers': seat_numbers},status=status.HTTP_200_OK)
 

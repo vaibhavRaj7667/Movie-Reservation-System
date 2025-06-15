@@ -172,7 +172,11 @@ function Movies() {
                     <div
                       key={show.id}
                       className="bg-gray-800 text-amber-50 rounded-lg shadow-lg p-4 flex flex-col justify-between"
-                      onClick={()=> navigate(`/booking/`,{state:{total: show.available_seats}})}
+                      onClick={()=> navigate(`/booking/`,{state:
+                                                          {total: show.available_seats,
+                                                            show_id : show.id,
+                                                            movie_name : show.movie
+                                                          }})}
                     >
                       <div>
                         <h3 className="text-lg font-bold">{show.movie}</h3>

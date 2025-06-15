@@ -1,20 +1,16 @@
 from rest_framework import serializers
 from .models import Booking
-
+from django.contrib.auth.models import User
+from movies.models import Movies
 
 class bookingSerializer(serializers.ModelSerializer):
+
+    user = serializers.SlugRelatedField(queryset = User.objects.all(), slug_field='username')  # Accept username instead of pk
+    movie = serializers.SlugRelatedField(queryset = Movies.objects.all(), slug_field='title')
+    booking_time = serializers.DateTimeField(read_only = True)
+    hold_timestamp = serializers.DateTimeField(read_only = True)
+
     class Meta:
         model= Booking
         fields = '__all__'
     
-    def create(self, validated_data):
-
-        booking = Booking.objects.create(
-            user = validated_data['user'],
-            movie = validated_data['movie'],
-            show_time = validated_data['show_time'],
-            seat_number = validated_data['seat_number'],
-            price = validated_data['price'],
-        )
-
-        return booking
