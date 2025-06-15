@@ -19,18 +19,35 @@ class ticketBooking(APIView):
         print(flat_list)
         return Response({'booked_seats':flat_list}, status=status.HTTP_200_OK)
     
-    
+    permission_classes=[AllowAny]
     def post(self, request):
 
         Data = request.data
 
         user = request.user
-        print(user)
         show_id = Data.get('show_time')
         movie = Data.get('movie')
         seat_number = Data.get('seat_number')
         price = Data.get("price")
         is_booked = Data.get("is_booked")
+
+       
+
+        try:
+
+            bookings = Booking.objects.filter(show_time_id = show_id)
+            seat_numbersDB = []
+            for booking in bookings:
+                seat_numbersDB.extend(booking.seat_number)
+            
+
+            any_in = any(i in seat_numbersDB for i in seat_number)
+
+            if any_in:
+                return Response({'message':"dublicate seats"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Exception as e:
+            print(e)
         
 
         serializer = bookingSerializer(data={
@@ -65,4 +82,5 @@ def bookedSeatsView(request):
 
         
     return Response({'seat_numbers': seat_numbers},status=status.HTTP_200_OK)
+
 
