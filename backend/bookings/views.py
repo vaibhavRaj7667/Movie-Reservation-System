@@ -11,13 +11,19 @@ from rest_framework.decorators import api_view
 
 class ticketBooking(APIView):
 
-    permission_classes=[AllowAny]
+
     def get(self, request):
-        booking = Booking.objects.values_list('seat_number', flat=True)
-        seat_number_list = list(booking)
-        flat_list = list(itertools.chain(*seat_number_list))
-        print(flat_list)
-        return Response({'booked_seats':flat_list}, status=status.HTTP_200_OK)
+        user = request.user
+        booking = Booking.objects.filter(user=user, is_booked=False).order_by('-id')
+        if not booking:
+            return Response({'message':"no bookings found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = bookingSerializer(booking, many=True)
+
+        # seat_number_list = list(booking)
+        # flat_list = list(itertools.chain(*seat_number_list))
+        # print(flat_list)
+        return Response({'data': serializer.data},status=status.HTTP_200_OK)
     
     permission_classes=[AllowAny]
     def post(self, request):

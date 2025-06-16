@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Navbar from '../custom/Navbar';
-import { useLocation } from 'react-router-dom';
+import { useLocation , useNavigate} from 'react-router-dom';
+// import { ToastContainer, toast } from 'react-toastify'
+
 
 const TheaterSeatingChart = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { total, show_id, movie_name } = location.state || {};
   const urls = import.meta.env.VITE_API_URL;
   const Show_id = show_id;
@@ -208,10 +211,10 @@ const TheaterSeatingChart = () => {
       return;
     }
 
-    if (!urls || !Movie_name || !Show_id) {
-      alert('Missing booking information. Please try again.');
-      return;
-    }
+    // if (!urls || !Movie_name || !Show_id) {
+    //   alert('Missing booking information. Please try again.');
+    //   return;
+    // }
 
     setIsLoading(true);
     
@@ -251,6 +254,11 @@ const TheaterSeatingChart = () => {
       alert('Failed to process booking. Please try again.');
     } finally {
       setIsLoading(false);
+
+      if(!isLoading){
+        navigate('/payment')
+      }
+
     }
   };
 
@@ -388,6 +396,7 @@ const TheaterSeatingChart = () => {
           </div>
         </div>
       )}
+       
     </div>
   );
 };

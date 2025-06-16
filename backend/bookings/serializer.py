@@ -9,6 +9,7 @@ class bookingSerializer(serializers.ModelSerializer):
     movie = serializers.SlugRelatedField(queryset = Movies.objects.all(), slug_field='title')
     booking_time = serializers.DateTimeField(read_only = True)
     hold_timestamp = serializers.DateTimeField(read_only = True)
+    id = serializers.IntegerField(read_only = True)
 
     class Meta:
         model= Booking
