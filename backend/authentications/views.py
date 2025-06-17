@@ -79,11 +79,11 @@ class customTokenRefreshView(TokenRefreshView):
                 key='access',
                 value=access_token,
                 httponly=True,
-                secure=False,  # Set to True if using HTTPS
-                samesite='Lax',  # Adjust as needed
+                secure=True,  # Set to True if using HTTPS
+                samesite='None',  # Adjust as needed
                 path='/'
             )
-
+            del response.data['access'] 
             return res
         except Exception as e:
             return Response({'success': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -104,3 +104,43 @@ class LogoutView(APIView):
         except Exception as e:
              return Response({'success': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
+
+# class customTokenRefreshView(TokenRefreshView):
+#     def post(self, request, *args, **kwargs):
+#         try:
+#             refresh_token = request.COOKIES.get('refresh')
+#             if not refresh_token:
+#                 return Response({'success': False, 'error': 'Refresh token not provided in cookies'}, status=status.HTTP_400_BAD_REQUEST)
+            
+#             # Make a mutable copy of request data
+#             data = request.data.copy()
+#             data['refresh'] = refresh_token
+
+#             # Replace request.data for super().post()
+#             request._full_data = data
+
+#             # Call parent view
+#             response = super().post(request, *args, **kwargs)
+
+#             token_data = response.data
+#             access_token = token_data.get('access')
+            
+#             if not access_token:
+#                 return Response({'success': False, 'error': 'Failed to obtain access token'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Create new response
+#             res = Response({'refreshed': True}, status=status.HTTP_200_OK)
+
+#             # Set new access token in cookie
+#             res.set_cookie(
+#                 key='access',
+#                 value=access_token,
+#                 httponly=True,
+#                 secure=True,  # use True if you have HTTPS in production
+#                 samesite='Lax',
+#                 path='/'
+#             )
+
+#             return res
+#         except Exception as e:
+#             return Response({'success': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

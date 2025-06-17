@@ -11,13 +11,17 @@ from django.contrib.auth import logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-
-
+from django.contrib.auth.decorators import user_passes_test
+from rest_framework import permissions
+from .permision import IsInGroupA
 
 class moviesView(APIView):
     
     # @method_decorator(cache_page(60*1))  # Cache for 1 minutes
     # @method_decorator(vary_on_cookie)  # Vary cache based on cookies
+    # permission_classes=[IsInGroupA]
+    # queryset = Movies.objects.all()
+
     def get(self, request):
         # genres = request.data.get('genres', None) 
         genres = request.query_params.get('genres', None) 
@@ -73,7 +77,7 @@ class genereView(APIView):
     
 class showView(APIView):
 
-    permission_classes=[AllowAny]
+    # permission_classes=[AllowAny]
 
     def get(self, request, title):
         myshows = Show.objects.filter(movie__title__iexact=title) #case insensitive filtering 

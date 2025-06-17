@@ -6,12 +6,11 @@ from movies.models import Show
 from .serializer import bookingSerializer
 from movies.models import Movies
 from .models import Booking
-import itertools
 from rest_framework.decorators import api_view
 
 class ticketBooking(APIView):
 
-
+    permission_classes=[AllowAny]
     def get(self, request):
         user = request.user
         booking = Booking.objects.filter(user=user, is_booked=False).order_by('-id')
