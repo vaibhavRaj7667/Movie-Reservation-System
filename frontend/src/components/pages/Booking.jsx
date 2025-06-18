@@ -82,7 +82,7 @@ const Booking = () => {
 
            <PaymetCard
            movie={item.movie}
-           show_time={item.show_time}
+           show_time={item.show_time.show_time}
            seats ={item.seat_number.join(', ')}
            total={item.price}
            id ={item.id}

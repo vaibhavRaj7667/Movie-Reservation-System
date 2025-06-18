@@ -2,10 +2,25 @@ import React from 'react'
 import { useState } from 'react';
 
 const PaymetCard = ({movie, show_time, seats, total, indexs,id , handelBooking}) => {
+  
+  function formatDate(isoString) {
+    const date = new Date(isoString);
+
+    const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        // timeZoneName: 'short'
+    };
+
+    return date.toLocaleString('en-US', options);
+}
  
   return (
     <div>
-        <div  className="w-xl max-w-6xl">
+        <div  className="w-xl max-w-2xl">
           
 
           {/* Payment Summary Card */}
@@ -25,7 +40,7 @@ const PaymetCard = ({movie, show_time, seats, total, indexs,id , handelBooking})
               {/* show timing */}
               <div className="flex justify-between items-center py-2">
                 <span className="text-gray-600">Show Time:</span>
-                <span className="font-medium text-gray-800">{show_time}</span>
+                <span className="font-medium text-gray-800">{formatDate(show_time)}</span>
               </div>
 
               {/* Selected Seats */}

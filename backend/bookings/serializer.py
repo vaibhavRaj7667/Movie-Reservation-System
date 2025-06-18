@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import Booking
 from django.contrib.auth.models import User
-from movies.models import Movies
+from movies.models import Movies,Show
+from movies.serializer import ShowsSerializer
 
 class bookingSerializer(serializers.ModelSerializer):
 
@@ -10,7 +11,11 @@ class bookingSerializer(serializers.ModelSerializer):
     booking_time = serializers.DateTimeField(read_only = True)
     hold_timestamp = serializers.DateTimeField(read_only = True)
     id = serializers.IntegerField(read_only = True)
-    # show_time = serializers.StringRelatedField() 
+
+    show_time = ShowsSerializer(read_only=True) #for get request
+    show_time_id = serializers.PrimaryKeyRelatedField(
+        queryset=Show.objects.all(), write_only=True #for POST request
+    )  
     """ 
     in Response it show string insted of the id 
 
@@ -21,4 +26,14 @@ class bookingSerializer(serializers.ModelSerializer):
     class Meta:
         model= Booking
         fields = '__all__'
-    
+
+    def create(self, validated_data):
+        # Extract show_time_id and assign it to show_time
+        show = validated_data.pop('show_time_id')
+        booking = Booking.objects.create(show_time=show, **validated_data)
+        return booking
+
+    # def update(self, instance, validated_data):
+    #     if 'show_time_id' in validated_data:
+    #         instance.show_time = validated_data.pop('show_time_id')
+    #     return super().update(instance, validated_data)

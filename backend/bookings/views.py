@@ -25,7 +25,7 @@ class ticketBooking(APIView):
         # print(flat_list)
         return Response({'data': serializer.data},status=status.HTTP_200_OK)
     
-    permission_classes=[AllowAny]
+    # permission_classes=[AllowAny]
     def post(self, request):
 
         Data = request.data
@@ -59,7 +59,8 @@ class ticketBooking(APIView):
         serializer = bookingSerializer(data={
             'user': user,
             'movie': movie,
-            'show_time': show_id,
+            'show_time_id': show_id,
+            # 'show_time': show_id,
             'seat_number': seat_number,
             'price': price,
             'is_booked': is_booked
@@ -91,7 +92,7 @@ def bookedSeatsView(request):
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+# @permission_classes([AllowAny])
 def conformBooking(request):
     if request.method =='POST':
         id = request.data.get('id')
