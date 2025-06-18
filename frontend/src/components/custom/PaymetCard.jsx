@@ -1,9 +1,11 @@
 import React from 'react'
+import { useState } from 'react';
 
-const PaymetCard = ({movie, show_time, seats, total, indexs}) => {
+const PaymetCard = ({movie, show_time, seats, total, indexs,id , handelBooking}) => {
+ 
   return (
     <div>
-        <div  className="w-xl max-w-2xl">
+        <div  className="w-xl max-w-6xl">
           
 
           {/* Payment Summary Card */}
@@ -46,7 +48,9 @@ const PaymetCard = ({movie, show_time, seats, total, indexs}) => {
               <button className="flex-1 bg-gray-500 text-gray-800 py-3 px-6 rounded-lg font-medium hover:bg-gray-400 transition-colors">
                 Back
               </button>
-              <button className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+              <button 
+              onClick={()=>handelBooking(id)}
+              className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors">
                 Confirm Booking
               </button>
             </div>

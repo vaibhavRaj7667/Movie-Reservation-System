@@ -6,7 +6,8 @@ from movies.models import Show
 from .serializer import bookingSerializer
 from movies.models import Movies
 from .models import Booking
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes     
+from django.shortcuts import get_object_or_404
 
 class ticketBooking(APIView):
 
@@ -89,3 +90,19 @@ def bookedSeatsView(request):
     return Response({'seat_numbers': seat_numbers},status=status.HTTP_200_OK)
 
 
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def conformBooking(request):
+    if request.method =='POST':
+        id = request.data.get('id')
+        if not id:
+            return Response({'message':'please provide id'}, status=status.HTTP_400_BAD_REQUEST)
+        booking = get_object_or_404(Booking, id=id)
+
+        serializer = bookingSerializer(booking, data ={'is_booked': True}, partial=True)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    return Response(status=status.HTTP_400_BAD_REQUEST)

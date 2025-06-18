@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../custom/Navbar'
 import PaymetCard from '../custom/PaymetCard';
 import RefreshToken from '../custom/RefreshToken';
-
+import { ToastContainer, toast } from 'react-toastify'
 
 const Booking = () => {
-
+  const urls = import.meta.env.VITE_API_URL;
   const [booking, setBooking] = useState()
-
+  const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
   const fetchData = async () => {
     try {
@@ -33,6 +33,39 @@ const Booking = () => {
 }, []);
 
 
+  const HandelBooking= async(id)=>{
+    try {
+      console.log("HandelBooking called with id:", id)
+      const resposne = await fetch(`${urls}/conformBooking/`,{
+        method:'POST',
+        headers: {
+            'Content-Type': 'application/json',
+          },
+        credentials: 'include',
+        body:JSON.stringify({
+          id : id
+        })
+      })
+  
+      const Resposne = await resposne.json()
+  
+      console.log(Resposne.id)
+      setBooking(booking.filter(booking=> booking.id !== Resposne.id))
+      
+      toast.success('booking conform',
+        {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      }
+      )
+    } catch (error) {
+      console.log(`Errors---> ${error}`)
+    }
+  }
 
 
 
@@ -40,7 +73,9 @@ const Booking = () => {
     <div className="min-h-screen bg-gray-800">
       <Navbar />
       <div className="flex flex-col items-center justify-center gap-5 py-8 px-4">
-
+        <p
+        className="font-bold text-amber-50 text-2xl"
+        >Draft Booking</p>
        
 
         {booking && booking.map((item, index) => (
@@ -50,13 +85,17 @@ const Booking = () => {
            show_time={item.show_time}
            seats ={item.seat_number.join(', ')}
            total={item.price}
+           id ={item.id}
            indexs ={index}
+           handelBooking={HandelBooking}
            />
       
         ))}
         
-
+         <ToastContainer
+         />
       </div>
+     
     </div>
   )
 }
