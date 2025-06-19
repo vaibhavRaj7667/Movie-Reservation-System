@@ -14,7 +14,7 @@ from django.views.decorators.vary import vary_on_cookie
 from django.contrib.auth.decorators import user_passes_test
 from rest_framework import permissions
 from .permision import IsInGroupA
-
+from django.utils.timezone import now
 class moviesView(APIView):
     
     # @method_decorator(cache_page(60*1))  # Cache for 1 minutes
@@ -80,7 +80,7 @@ class showView(APIView):
     # permission_classes=[AllowAny]
 
     def get(self, request, title):
-        myshows = Show.objects.filter(movie__title__iexact=title) #case insensitive filtering 
+        myshows = Show.objects.filter(movie__title__iexact=title, show_time__gte = now()) #case insensitive filtering 
         if not myshows.exists():
              return Response({'message': 'No shows found for this movie.'}, status=status.HTTP_404_NOT_FOUND)
         serializer = ShowsSerializer(myshows, many = True)
