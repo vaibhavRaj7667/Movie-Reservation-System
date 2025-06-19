@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'movies',
     'bookings',
     "corsheaders",
+    'rest_framework_simplejwt.token_blacklist',
 
 ]
 
@@ -188,4 +189,5 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_SECURE': False,  # Must match SESSION_COOKIE_SECURE
     'AUTH_COOKIE_HTTP_ONLY': True,
     'AUTH_COOKIE_SAMESITE': 'Lax',  # Must match other SameSite settings
+    'BLACKLIST_AFTER_ROTATION': True,
 }

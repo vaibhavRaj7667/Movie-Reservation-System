@@ -13,6 +13,7 @@ staticfiles/
 */migrations/*.pyc
 */migrations/*.pyo
 */migrations/*.pyd
+migrations/
 
 # Node/React/Angular (frontend)
 node_modules/

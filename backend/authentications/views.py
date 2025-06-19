@@ -7,6 +7,7 @@ from rest_framework import status
 from authentications.serializer import SignUpSerializer
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 
@@ -90,19 +91,24 @@ class customTokenRefreshView(TokenRefreshView):
         
 
 class LogoutView(APIView):
-    permission_classes=[AllowAny]
+    # permission_classes=[AllowAny]
 
     def post(self, request):
-        try:
-            res = Response()
+        refresh_token = request.COOKIES.get('refresh')
+        print(refresh_token)
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+            except Exception as e:
+                print(e)
+        
+        response = Response({"message": "Logged out successfully"}, status=200)
+        response.delete_cookie("access")
+        response.delete_cookie("refresh")
+        return response
+            
 
-            res.data ={'success':True}
-            res.delete_cookie('access', path='/', samesite='None')
-            res.delete_cookie('refresh', path='/', samesite='None')
-
-            return res
-        except Exception as e:
-             return Response({'success': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 
 # class customTokenRefreshView(TokenRefreshView):

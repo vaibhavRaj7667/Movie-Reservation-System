@@ -10,7 +10,11 @@ const Navbar = () => {
 
   const handelLogout = async()=>{
     try {
-      const resposne = await axios.post(`${urls}/logout/`)
+      const resposne = await axios.post(`${urls}/logout/`,null,
+         {
+            withCredentials: true
+          }
+      )
 
       toast.success("logout succesfull")
 

@@ -12,7 +12,7 @@ class Booking(models.Model):
     seat_number = models.JSONField(default=list)
     price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     is_booked = models.BooleanField(default=False)
-    hold_timestamp = models.DateTimeField(auto_now_add=True)
+    hold_timestamp = models.DateTimeField(auto_now_add=True, null=True) # null true becuse migration did't working
     
     def __str__(self):
         return f"{self.user.username} - {self.movie.title} at {self.show_time} time {self.hold_timestamp}"
