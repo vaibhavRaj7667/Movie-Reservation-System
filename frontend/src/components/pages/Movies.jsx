@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../custom/Navbar';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../custom/Footer';
 
 function Movies() {
  const [Mymovies, SetMymovies] = useState({});
@@ -214,6 +215,7 @@ function Movies() {
 
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../custom/Navbar';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Footer from '../custom/Footer';
 
 const Home = () => {
    const [movie, setMovie] = useState([]);
@@ -120,6 +121,7 @@ const Home = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

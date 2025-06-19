@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../custom/Navbar'
+import Footer from '../custom/Footer';
 import PaymetCard from '../custom/PaymetCard';
 import RefreshToken from '../custom/RefreshToken';
 import { ToastContainer, toast } from 'react-toastify'
@@ -95,7 +96,7 @@ const Booking = () => {
          <ToastContainer
          />
       </div>
-     
+      <Footer/>
     </div>
   )
 }

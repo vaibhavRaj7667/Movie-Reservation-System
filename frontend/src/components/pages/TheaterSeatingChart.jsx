@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Navbar from '../custom/Navbar';
 import { useLocation , useNavigate} from 'react-router-dom';
+import Footer from '../custom/Footer';
 // import { ToastContainer, toast } from 'react-toastify'
 
 
@@ -12,7 +13,7 @@ const TheaterSeatingChart = () => {
   const Show_id = show_id;
   const Movie_name = movie_name;
   const totalSeats = total || 50; // Default fallback
-
+  
   const [bookedSeats, setBookedSeats] = useState([]);
   const [seats, setSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
@@ -396,7 +397,7 @@ const TheaterSeatingChart = () => {
           </div>
         </div>
       )}
-       
+       <Footer/>
     </div>
   );
 };

@@ -83,7 +83,7 @@ const Navbar = () => {
             to="#"
             className="block text-white hover:text-yellow-400 transition-colors px-6 sm:px-0"
           >
-            Login
+            Profile
           </Link>
         </li>
         <li className="sm:py-0 py-2">

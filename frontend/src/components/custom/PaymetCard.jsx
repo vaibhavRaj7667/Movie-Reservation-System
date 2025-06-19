@@ -20,7 +20,7 @@ const PaymetCard = ({movie, show_time, seats, total, indexs,id , handelBooking})
  
   return (
     <div>
-        <div  className="w-xl max-w-2xl">
+        <div  className="w-full sm:w-lg md:w-xl max-w-full sm:max-w-xl md:max-w-2xl">
           
 
           {/* Payment Summary Card */}
