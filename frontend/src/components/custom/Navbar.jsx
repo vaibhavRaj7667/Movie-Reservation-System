@@ -80,7 +80,7 @@ const Navbar = () => {
         </li>
         <li className="border-b sm:border-none border-gray-700 sm:py-0 py-2">
           <Link
-            to="#"
+            to="/profile/"
             className="block text-white hover:text-yellow-400 transition-colors px-6 sm:px-0"
           >
             Profile

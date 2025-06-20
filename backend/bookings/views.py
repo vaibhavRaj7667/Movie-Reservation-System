@@ -8,10 +8,11 @@ from movies.models import Movies
 from .models import Booking
 from rest_framework.decorators import api_view, permission_classes     
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
 class ticketBooking(APIView):
 
-    permission_classes=[AllowAny]
+    
     def get(self, request):
         user = request.user
         booking = Booking.objects.filter(user=user, is_booked=False).order_by('-id')
@@ -107,3 +108,24 @@ def conformBooking(request):
             return Response(serializer.data, status=status.HTTP_200_OK)
     
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def UserProfileView(request):
+    if request.method == "GET":
+        user = request.user
+        if not user.is_authenticated:
+            return Response({"message":"user not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+        data = Booking.objects.filter(user = user, is_booked=True).values(
+            'id', 
+            'user__username', 
+            'movie__title', 
+            'show_time__show_time', 
+            'seat_number', 
+            'price', 
+            'booking_time'
+        ).order_by('-booking_time')
+        if not data:
+            return Response({"message":"no bookings found"}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({"data":data},status=status.HTTP_200_OK)

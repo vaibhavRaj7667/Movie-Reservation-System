@@ -7,7 +7,7 @@ from authentications.views import signUpView
 from rest_framework import permissions
 from movies.views import moviesView, moviesUpadteView,genereView, logoutView,showView
 from authentications.views import customTokenObtainPairView, customTokenRefreshView,LogoutView,LogoutView
-from bookings.views import ticketBooking, bookedSeatsView,conformBooking
+from bookings.views import ticketBooking, bookedSeatsView,conformBooking,UserProfileView
 
 
 schema_view = get_schema_view(
@@ -37,6 +37,7 @@ urlpatterns = [
     path('booking/',ticketBooking.as_view()),
     path('bookseats/', bookedSeatsView,name="bookedSeatsView"),
     path('conformBooking/', conformBooking, name="conformBooking"),
+    path('profile/', UserProfileView, name="UserProfileView"),
 
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

@@ -12,7 +12,7 @@ const Booking = () => {
   useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/booking/`, {
+      const response = await fetch(`${urls}/booking/`, {
         method: "GET",
         credentials: 'include',
       });
