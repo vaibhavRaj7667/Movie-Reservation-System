@@ -6,6 +6,7 @@ import Movies from './components/pages/Movies'
 import TheaterSeatingChart from './components/pages/TheaterSeatingChart'
 import Booking from './components/pages/Booking'
 import Profile from './components/pages/Profile'
+import NotFound from './components/custom/NotFound'
 
 function App() {
   
@@ -20,6 +21,7 @@ function App() {
           <Route path='booking/' element={<TheaterSeatingChart/>} />
           <Route path='payment/' element={<Booking/>}/>
           <Route path='profile/' element={<Profile/>}/>
+          <Route path='*' element={<NotFound/>}/>
         </Routes>
     
     </>
