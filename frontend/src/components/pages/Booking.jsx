@@ -31,7 +31,41 @@ const Booking = () => {
   };
 
   fetchData(); // Call the async function
-}, []);
+}, [urls]);
+
+  const HandelDelete = async(id)=>{
+    try {
+      console.log("HandelDelete called with id:", id)
+      const resposne = await fetch(`${urls}/conformBooking/`,{
+        method:'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+          },
+        credentials: 'include',
+        body:JSON.stringify({
+          id : id
+        })
+      })
+  
+      // const Resposne = await resposne.json()
+  
+      // console.log(Resposne.id)
+      setBooking(booking.filter(booking=> booking.id !== id))
+      
+      toast.success('booking deleted',
+        {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      }
+      )
+    } catch (error) {
+      console.log(`Errors---> ${error}`)
+    }
+  }
 
 
   const HandelBooking= async(id)=>{
@@ -82,6 +116,7 @@ const Booking = () => {
         {booking && booking.map((item, index) => (
 
            <PaymetCard
+           key={index}
            movie={item.movie}
            show_time={item.show_time.show_time}
            seats ={item.seat_number.join(', ')}
@@ -89,6 +124,7 @@ const Booking = () => {
            id ={item.id}
            indexs ={index}
            handelBooking={HandelBooking}
+           handelDelete={HandelDelete}
            />
       
         ))}

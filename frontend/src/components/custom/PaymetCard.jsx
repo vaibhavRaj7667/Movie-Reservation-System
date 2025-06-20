@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 
-const PaymetCard = ({movie, show_time, seats, total, indexs,id , handelBooking}) => {
+const PaymetCard = ({movie, show_time, seats, total, indexs,id , handelBooking, handelDelete}) => {
   
   function formatDate(isoString) {
     const date = new Date(isoString);
@@ -60,8 +60,10 @@ const PaymetCard = ({movie, show_time, seats, total, indexs,id , handelBooking})
 
             {/* Action Buttons */}
             <div className="flex gap-4 mt-8">
-              <button className="flex-1 bg-gray-500 text-gray-800 py-3 px-6 rounded-lg font-medium hover:bg-gray-400 transition-colors">
-                Back
+              <button 
+              onClick={()=>handelDelete(id)}
+              className="flex-1 bg-gray-500 text-gray-800 py-3 px-6 rounded-lg font-medium hover:bg-gray-400 transition-colors">
+                Delete Booking
               </button>
               <button 
               onClick={()=>handelBooking(id)}

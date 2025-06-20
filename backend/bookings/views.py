@@ -92,7 +92,7 @@ def bookedSeatsView(request):
     return Response({'seat_numbers': seat_numbers},status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['POST','DELETE'])
 # @permission_classes([AllowAny])
 def conformBooking(request):
     if request.method =='POST':
@@ -106,6 +106,18 @@ def conformBooking(request):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    elif request.method == 'DELETE':
+        id = request.data.get('id')
+        print(id)
+        if not id:
+            return Response({'message':'please provide id'}, status=status.HTTP_400_BAD_REQUEST)
+
+        booking = Booking.objects.filter(id=id).first()
+
+        data = booking.delete()
+        
+        return Response({'deleted':data}, status=status.HTTP_200_OK)
     
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
