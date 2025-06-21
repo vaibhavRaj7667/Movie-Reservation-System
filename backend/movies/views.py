@@ -45,6 +45,24 @@ class moviesView(APIView):
         
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
+    def patch(self, request):
+
+        imdb_page = request.data.get('imdb_page', None)
+        if not imdb_page:
+            return Response({'error': 'IMDB URL is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        data = Movies.objects.filter(imdb_page=imdb_page).first()
+        if not data:
+            return Response({'error': 'Movie not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = MovieSerializer(data, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(status=status.HTTP_200_OK)
+        
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    
 
 class moviesUpadteView(APIView):
         

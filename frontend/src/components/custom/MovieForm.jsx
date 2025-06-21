@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 
 
-const MovieForm = ({genres}) => {
+const MovieForm = ({genres, existingData }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const urls = import.meta.env.VITE_API_URL;
+    
+    
     const onSubmit = async (data) => {
     setLoading(true);
     setError(false);
@@ -45,6 +48,60 @@ const MovieForm = ({genres}) => {
     }
   }
 
+  const handleEdit = async(data) => {
+    setLoading(true);
+    setError(false);
+
+    try {
+
+      const formattedData = {
+        genres: Array.from(data.genres).map(genreId => parseInt(genreId)),
+        language: data.language,
+        title: data.title,
+        description: data.description,
+        release_date: data.releaseDate,
+        duration: parseInt(data.duration),
+        imdb_page: data.imdbUrl,
+        poster: data.posterUrl
+      };
+
+      const response = await axios.patch(`${urls}/movies/`, formattedData, {
+        withCredentials: true
+      });
+
+      console.log('Movie Upadted successfully:', response.data);
+      reset(); // Clear form after successful submission
+      alert('Movie Updated successfully!');
+    } catch (error) {
+      console.error('Error adding movie:', error);
+      setError(true);
+      alert('Error adding movie. Please try again.');
+      
+    }
+    finally {
+      setLoading(false);
+      setIsEditing(false);
+    }
+  }
+
+  useEffect(() => {
+    console.log('Existing data:', existingData);
+    if (existingData) {
+      // Populate form with existing data
+      setIsEditing(true);
+      reset({
+        title: existingData.title || '',
+        language : existingData.language || '',
+        description: existingData.description || '',
+        releaseDate: existingData.release_date ? new Date(existingData.release_date).toISOString().split('T')[0] : '',
+        duration: existingData.duration || '',
+        imdbUrl: existingData.imdb_page || '',
+        posterUrl: existingData.poster || ''
+        
+      })
+    }
+  }, [existingData])
+
 
 
   return (
@@ -58,7 +115,7 @@ const MovieForm = ({genres}) => {
               </div>
             )}
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(isEditing ? handleEdit : onSubmit)} className="space-y-6">
               {/* Title */}
               <div>
                 <input

@@ -36,7 +36,7 @@ class MovieSerializer(serializers.ModelSerializer):
         instance.save()
         if genres is not None:
             instance.genres.set(genres)
-        return 
+        return instance
     
 
 
