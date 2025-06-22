@@ -11,9 +11,9 @@ const Navbar = () => {
   const handelLogout = async()=>{
     try {
       const resposne = await axios.post(`${urls}/logout/`,null,
-         {
-            withCredentials: true
-          }
+        //  {
+        //     withCredentials: true
+        //   }
       )
 
       toast.success("logout succesfull")

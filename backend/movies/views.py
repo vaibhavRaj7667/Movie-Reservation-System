@@ -19,8 +19,8 @@ class moviesView(APIView):
     
     # @method_decorator(cache_page(60*1))  # Cache for 1 minutes
     # @method_decorator(vary_on_cookie)  # Vary cache based on cookies
-    # permission_classes=[IsInGroupA]
-    # queryset = Movies.objects.all()
+    permission_classes=[IsInGroupA]
+    queryset = Movies.objects.all()
 
     def get(self, request):
         # genres = request.data.get('genres', None) 
@@ -51,7 +51,8 @@ class moviesView(APIView):
         if not imdb_page:
             return Response({'error': 'IMDB URL is required.'}, status=status.HTTP_400_BAD_REQUEST)
         
-        data = Movies.objects.filter(imdb_page=imdb_page).first()
+        # data = Movies.objects.filter(imdb_page=imdb_page).first()
+        data = get_object_or_404(Movies, imdb_page=imdb_page)
         if not data:
             return Response({'error': 'Movie not found.'}, status=status.HTTP_404_NOT_FOUND)
         

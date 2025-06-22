@@ -8,6 +8,7 @@ from authentications.serializer import SignUpSerializer
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import logout
 
 
 
@@ -91,11 +92,12 @@ class customTokenRefreshView(TokenRefreshView):
         
 
 class LogoutView(APIView):
-    # permission_classes=[AllowAny]
+    permission_classes=[AllowAny]
 
     def post(self, request):
+        logout(request)
         refresh_token = request.COOKIES.get('refresh')
-        print(refresh_token)
+        # print(refresh_token)
         if refresh_token:
             try:
                 token = RefreshToken(refresh_token)
