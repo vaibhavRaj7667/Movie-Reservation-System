@@ -46,3 +46,12 @@ class ShowsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Show
         fields = '__all__'
+
+    # Override the create method becuse we have to pass the movie object instead of its String title
+    # This is because the movie field in the Show model is a ForeignKey to the Movies
+    def create(self, validated_data):
+        movie_data = validated_data.pop('movie', None)
+        if movie_data:
+            movie = Movies.objects.get(title=movie_data['title'])
+            validated_data['movie'] = movie # customize the validated_data(incoming data) to pass the movie object instead of its title
+        return super().create(validated_data)

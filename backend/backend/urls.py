@@ -34,6 +34,7 @@ urlpatterns = [
     path('genres/',genereView.as_view() ),
     path('logout/',LogoutView.as_view()),
     path('shows/<str:title>/',showView.as_view()),
+    path('shows/',showView.as_view()),
     path('booking/',ticketBooking.as_view()),
     path('bookseats/', bookedSeatsView,name="bookedSeatsView"),
     path('conformBooking/', conformBooking, name="conformBooking"),

@@ -8,6 +8,7 @@ import Booking from './components/pages/Booking'
 import Profile from './components/pages/Profile'
 import NotFound from './components/custom/NotFound'
 import Addmovies from './components/admins/Addmovies'
+import Addshows from './components/admins/Addshows'
 
 function App() {
   
@@ -23,6 +24,7 @@ function App() {
           <Route path='payment/' element={<Booking/>}/>
           <Route path='profile/' element={<Profile/>}/>
           <Route path='admin/movies/' element={<Addmovies/>}/>
+          <Route path='admin/shows/' element={<Addshows/>}/>
           <Route path='*' element={<NotFound/>}/>
         </Routes>
     

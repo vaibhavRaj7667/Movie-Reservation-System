@@ -6,7 +6,9 @@ import { ToastContainer, toast } from 'react-toastify'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isadmin, setIsadmin] = useState(true)
   const urls = import.meta.env.VITE_API_URL;
+  
 
   const handelLogout = async()=>{
     try {
@@ -85,7 +87,27 @@ const Navbar = () => {
           >
             Profile
           </Link>
+
         </li>
+        {isadmin ? (<>
+          <li className="relative group border-b sm:border-none border-gray-700 sm:py-0 py-2">
+          <div className="block text-white hover:text-yellow-400 transition-colors px-6 sm:px-0 cursor-pointer">
+            Admin Pages
+          </div>
+          <ul className="absolute hidden group-hover:block bg-gray-800 rounded-md min-w-[200px] z-50 left-0 sm:left-auto sm:right-0 mt-0 shadow-lg">
+            <li className="px-4 py-2 hover:bg-gray-700 border-b border-gray-700">
+              <Link to="/admin/movies/" className="text-white hover:text-yellow-400">Add Movies</Link>
+            </li>
+            <li className="px-4 py-2 hover:bg-gray-700">
+              <Link to="/admin/shows/" className="text-white hover:text-yellow-400">Add Shows</Link>
+            </li>
+          </ul>
+        </li>
+
+        </>):(<>
+        </>)}
+         
+      
         <li className="sm:py-0 py-2">
           <Link
             to="#"

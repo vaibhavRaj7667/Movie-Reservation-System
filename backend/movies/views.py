@@ -8,13 +8,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view
 from django.contrib.auth import logout
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_cookie
-from django.contrib.auth.decorators import user_passes_test
-from rest_framework import permissions
 from .permision import IsInGroupA
 from django.utils.timezone import now
+
 class moviesView(APIView):
     
     # @method_decorator(cache_page(60*1))  # Cache for 1 minutes
@@ -88,11 +84,24 @@ class moviesUpadteView(APIView):
     
 
 class genereView(APIView):
-    
+
+    permission_classes=[IsInGroupA]
+
     def get(self, request):
         genere = Genre.objects.all()
         serializer = GenereSerializer(genere, many=True)
         return Response({'status':status.HTTP_200_OK,'data':serializer.data})
+    
+    def post(self, request):
+        serializer = GenereSerializer(data = request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({'message':serializer.data}, status=status.HTTP_201_CREATED)
+        
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        
     
 class showView(APIView):
 
@@ -105,6 +114,15 @@ class showView(APIView):
         serializer = ShowsSerializer(myshows, many = True)
         return Response({'data':serializer.data})
     
+    def post(self, request):
+        serializer = ShowsSerializer(data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({'message':serializer.data}, status=status.HTTP_201_CREATED)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+
 @api_view(["GET"])
 def logoutView(request):
     logout(request)
