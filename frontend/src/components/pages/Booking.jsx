@@ -106,7 +106,7 @@ const Booking = () => {
 
   return (
     <div className="min-h-screen bg-gray-800">
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex flex-col items-center justify-center gap-5 py-8 px-4">
         <p
         className="font-bold text-amber-50 text-2xl"
@@ -132,7 +132,7 @@ const Booking = () => {
          <ToastContainer
          />
       </div>
-      <Footer/>
+      {/* <Footer/> */}
     </div>
   )
 }

@@ -72,7 +72,7 @@ function Movies() {
 
   return (
     <div className="min-h-screen bg-[#213448]">
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="relative h-64 md:h-80 lg:h-96">
         <div
           className="absolute inset-0 bg-cover bg-center filter blur-xs"
@@ -215,7 +215,7 @@ function Movies() {
 
         </div>
       </div>
-      <Footer/>
+      {/* <Footer/> */}
     </div>
   );
 }

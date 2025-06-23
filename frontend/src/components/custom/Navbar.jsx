@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify'
 
@@ -7,18 +7,50 @@ import { ToastContainer, toast } from 'react-toastify'
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isadmin, setIsadmin] = useState(true)
-  const urls = import.meta.env.VITE_API_URL;
+  const urls = useMemo(() => import.meta.env.VITE_API_URL, []);
+  const navigate = useNavigate();
   
+  useEffect(()=>{
+    const admincheck = async()=>{
+      try {
+        const resposne = await axios.get(`${urls}/isadmin/`,
+           {
+              withCredentials: true
+            }
+        )
+        const data = resposne.data.groups
+
+        data.forEach((group) => {
+          if (group === 'admins') {
+            setIsadmin(true)
+          } else {
+            setIsadmin(false)
+          } })
+
+        console.log(`success`)
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    admincheck()
+
+  },[urls])
 
   const handelLogout = async()=>{
     try {
       const resposne = await axios.post(`${urls}/logout/`,null,
-        //  {
-        //     withCredentials: true
-        //   }
+         {
+            withCredentials: true
+          }
       )
 
       toast.success("logout succesfull")
+      axios.defaults.headers.common['Authorization'] = '';
+      setTimeout(() => {
+        navigate('/')
+      }, 1000);
 
       console.log(`${resposne.data} success`)
     } catch (error) {

@@ -59,12 +59,27 @@ const Addmovies = () => {
 
     return date.toLocaleString('en-US', options);
   }
+
+  const handleDeleteMovie = async (movieId) => {
+    try {
+      await axios.delete(`${urls}/update/${movieId}/`,{
+        withCredentials: true
+      }).then(()=>{
+        setMovies(Movies.filter(movie => movie.id !== movieId));
+      })
+    } catch (error) {
+      console.log(error)
+    }
+    
+  }
+
+    
   
   
 
   return (
     <div>
-      <Navbar/>
+      {/* <Navbar/> */}
       <div className="min-h-screen bg-gray-500 py-8">
         <div className="flex items-center justify-center ">
           <MovieForm
@@ -92,21 +107,38 @@ const Addmovies = () => {
 
         <div className="text-gray-200">
           {Movies.map((movie, key)=>(
-            <div key={key} 
-            
-            onClick={() => setEditedMovie(movie)}
-            className="bg-gray-700  p-4 m-4 rounded shadow-md hover:cursor-pointer">
-              <h2 className="text-xl font-bold">{movie.title}</h2>
-              <p>Genre: {movie.genres}</p>
-              <p>Release Date: { formatDate(movie.release_date)}</p>
-              <p>Description: {movie.description}</p>
+            <div
+              key={key}
+              onClick={() => setEditedMovie(movie)}
+              className="bg-gray-700 p-4 m-4 rounded shadow-md hover:cursor-pointer"
+            >
+              <>
+                <h2 className="text-xl font-bold">{movie.title}</h2>
+                
+                <p>Genre: {movie.genres}</p>
+                <p>Release Date: {formatDate(movie.release_date)}</p>
+                <p>Description: {movie.description}</p>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the onClick for editing
+                    if(window.confirm("Are you sure you want to delete this movie?")) {
+                      handleDeleteMovie(movie.id);
+                    }
+                    
+                  }}
+                  className="bg-red-500 text-white px-3 py-0.5 mt-2 rounded hover:bg-red-600 transition"
+                >
+                  Delete
+                </button>
+              </>
             </div>
+            
           ))}
         </div>
 
 
       </div>
-      <Footer/>
+      {/* <Footer/> */}
     </div>
   )
 }

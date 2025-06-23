@@ -9,42 +9,37 @@ const Login = () => {
     const {errors} = formState;
     const [logins, setlogins] = useState(true)
 
-    const onSubmit = async (data) => {
-    try {
-        setlogins(false)
-        const response = await fetch("http://127.0.0.1:8000/api/token/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-            credentials: "include",
-        });
+    const onSubmit = async (formData) => {
+        setlogins(true);
         
-        // const result = await response.json()
-        if (!response.ok) {
-            toast.error(result.detail || "Login failed. Please check your credentials.")
-            setlogins(true)
-            return
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/token/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || "Login failed. Please check your credentials.");
+            }
+
+            const result = await response.json();
             
+            // Store tokens if needed (commented out as per original)
+            // localStorage.setItem('access', result.access);
+            // localStorage.setItem('refresh', result.refresh);
+            
+            toast.success("Login successful!");
+            setTimeout(() => navigate('/home'), 1000);
+            
+        } catch (error) {
+            console.error("Login error:", error);
+            toast.error(error.message || "An error occurred. Please try again.");
+        } finally {
+            setlogins(false);
         }
-        setlogins(!logins)
-    
-        // localStorage.setItem('access', result.access)
-        // localStorage.setItem('refresh', result.refresh)
-        toast.success("Login successful!")
-
-        setTimeout(() => {
-                navigate('/home')
-            }, 1000)
-
-
-
-        console.log("Login successful:");
-    } catch (error) {
-        toast.error("An error occurred. Please try again.")
-        console.error("Login failed:", error);
-    }
 }
 
 

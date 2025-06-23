@@ -106,8 +106,28 @@ class LogoutView(APIView):
                 print(e)
         
         response = Response({"message": "Logged out successfully"}, status=200)
-        response.delete_cookie("access")
-        response.delete_cookie("refresh")
+        response.set_cookie(
+                    key='refresh',
+                    value='',
+                    httponly=True,
+                    secure=True,  
+                    samesite='None', 
+                    path='/',
+                    max_age=0  
+                    
+                )
+
+        response.set_cookie(
+                    key='access',
+                    value='',
+                    httponly=True,
+                    secure=True,  
+                    samesite='None',  
+                    path='/',
+                    max_age=0  
+                )
+
+        
         return response
             
 

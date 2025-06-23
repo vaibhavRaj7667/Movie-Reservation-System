@@ -45,7 +45,7 @@ const Profile = () => {
 
   return (
     <div className='min-h-screen bg-[#213448] '>
-        <Navbar/>
+        {/* <Navbar/> */}
         <div className="flex flex-col items-center justify-center">
             <p className="text-2xl font-bold text-amber-50 p-1">Your Profile</p>
 
@@ -82,7 +82,7 @@ const Profile = () => {
 
                 
         </div>
-      <Footer/>
+      {/* <Footer/> */}
     </div>
   )
 }

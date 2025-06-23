@@ -6,10 +6,12 @@ from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import logout
 from .permision import IsInGroupA
 from django.utils.timezone import now
+
+
 
 class moviesView(APIView):
     
@@ -58,7 +60,7 @@ class moviesView(APIView):
             return Response(status=status.HTTP_200_OK)
         
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
+    
     
 
 class moviesUpadteView(APIView):
@@ -78,8 +80,9 @@ class moviesUpadteView(APIView):
         return Response({'data':serializer.data})
     
     def delete(self, request, pk):
-        movie = get_object_or_404(Movies, pk=pk)
+        movie = get_object_or_404(Movies, id = pk)
         movie.delete()
+
         return Response(status=status.HTTP_200_OK)
     
 
@@ -105,7 +108,7 @@ class genereView(APIView):
     
 class showView(APIView):
 
-    # permission_classes=[AllowAny]
+    permission_classes=[IsInGroupA]
 
     def get(self, request, title):
         myshows = Show.objects.filter(movie__title__iexact=title, show_time__gte = now()) #case insensitive filtering 
@@ -128,3 +131,10 @@ def logoutView(request):
     logout(request)
     return Response(status=status.HTTP_200_OK)
         
+
+@api_view(['GET'])
+def Isadmin(request):
+    data = request.user.groups.all()
+    if not data:
+        return Response({'message': 'User is not in any group.'}, status=status.HTTP_403_FORBIDDEN)
+    return Response({'message': 'User is in group.', 'groups': [group.name for group in data]}, status=status.HTTP_200_OK)

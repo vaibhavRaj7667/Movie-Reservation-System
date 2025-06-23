@@ -64,7 +64,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-[#213448]">
-      <Navbar />
+      {/* <Navbar /> */}
 
       <div className="p-4">
         <p className="text-2xl font-bold text-center mt-2 text-amber-50">Movies</p>
@@ -121,7 +121,7 @@ const Home = () => {
           </div>
         )}
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

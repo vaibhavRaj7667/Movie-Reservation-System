@@ -276,7 +276,7 @@ const TheaterSeatingChart = () => {
 
   return (
     <div className="mx-auto p-4 bg-gray-800 text-white min-h-screen">
-      <Navbar/>
+      {/* <Navbar/> */}
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-2xl md:text-4xl font-bold mb-2">Select Your Seats</h1>
@@ -397,7 +397,7 @@ const TheaterSeatingChart = () => {
           </div>
         </div>
       )}
-       <Footer/>
+       {/* <Footer/> */}
     </div>
   );
 };

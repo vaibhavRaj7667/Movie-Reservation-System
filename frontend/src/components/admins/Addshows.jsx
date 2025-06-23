@@ -44,7 +44,7 @@ const Addshows = () => {
 
   return (
     <div className='h-screen bg-gray-500 w-full' >
-        <Navbar/>
+        {/* <Navbar/> */}
 
         <div className='flex flex-col items-center p-6 min-h-screen bg-gray-500'>
             <div className="bg-gray-900 p-8 rounded-lg w-full max-w-2xl mx-4 shadow-xl sm:w-2xl">
@@ -114,7 +114,7 @@ const Addshows = () => {
         </div>
 
         
-        <Footer/>
+        {/* <Footer/> */}
     </div>
   )
 }
