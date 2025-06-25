@@ -122,7 +122,7 @@ def conformBooking(request):
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+# @permission_classes([AllowAny])
 def UserProfileView(request):
     if request.method == "GET":
         user = request.user

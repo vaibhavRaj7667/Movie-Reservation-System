@@ -11,6 +11,7 @@ import Addmovies from './components/admins/Addmovies'
 import Addshows from './components/admins/Addshows'
 import Navbar from './components/custom/Navbar'
 import Footer from './components/custom/Footer'
+import MakeAmin from './components/admins/MakeAmin'
 
 function App() {
   
@@ -27,6 +28,7 @@ function App() {
           <Route path='profile/' element={<Profile/>}/>
           <Route path='admin/movies/' element={<Addmovies/>}/>
           <Route path='admin/shows/' element={<Addshows/>}/>
+          <Route path='admin/add/' element={<MakeAmin/>}/>
           <Route path='*' element={<NotFound/>}/>
         </Routes>
         <Footer/>

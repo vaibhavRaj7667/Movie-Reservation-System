@@ -4,13 +4,14 @@ from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework import status
-from authentications.serializer import SignUpSerializer
+from authentications.serializer import SignUpSerializer, userserializer
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import logout
-
-
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
+from rest_framework.permissions import DjangoModelPermissions
 
 
 class signUpView(APIView):
@@ -131,7 +132,44 @@ class LogoutView(APIView):
         return response
             
 
+class UserGroupView(APIView):
+
+    permission_classes = [DjangoModelPermissions]
+    queryset = Group.objects.all()
+
+    def get(self, request):
+        user = User.objects.all()
+        serializer = userserializer(user, many = True)
+
+        return Response({'data':serializer.data}, status=status.HTTP_200_OK)
+
+    def post(self, request, group_name, username):
+        try:
+            user = User.objects.get(username=username)
+            if user.groups.filter(name = group_name).exists():
+                return Response({'message':"user already is admin"},status=status.HTTP_200_OK )
+
+            group = Group.objects.get(name=group_name)
+            user.groups.add(group)
+            user.save()
+            return Response({"message": f"User {username} added to group {group_name}"}, status=status.HTTP_200_OK)
+        except Group.DoesNotExist:
+            return Response({"error": "Group does not exist"}, status=status.HTTP_404_NOT_FOUND)
         
+    def patch(self, request, group_name, username):
+        try:
+            user = User.objects.get(username=username)
+            group = Group.objects.get(name=group_name)
+            user.groups.remove(group)
+            user.save()
+            return Response({"message": f"User {username} removed from group {group_name}"}, status=status.HTTP_200_OK)
+        except:
+            return Response({"error": "something wrong "}, status=status.HTTP_404_NOT_FOUND)
+        
+
+        
+
+
 
 # class customTokenRefreshView(TokenRefreshView):
 #     def post(self, request, *args, **kwargs):

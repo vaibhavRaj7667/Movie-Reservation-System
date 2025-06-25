@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from authentications.views import signUpView
 from rest_framework import permissions
 from movies.views import moviesView, moviesUpadteView,genereView, logoutView,showView, Isadmin
-from authentications.views import customTokenObtainPairView, customTokenRefreshView,LogoutView,LogoutView
+from authentications.views import customTokenObtainPairView, customTokenRefreshView,LogoutView,LogoutView,UserGroupView
 from bookings.views import ticketBooking, bookedSeatsView,conformBooking,UserProfileView
 
 
@@ -40,6 +40,8 @@ urlpatterns = [
     path('conformBooking/', conformBooking, name="conformBooking"),
     path('profile/', UserProfileView, name="UserProfileView"),
     path('isadmin/', Isadmin,name="Isadmin"),
+    path('addgroup/<str:group_name>/<str:username>/', UserGroupView.as_view(), name="IsadminView"),
+    path('addgroup/', UserGroupView.as_view(), name="IsadminView"),
 
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

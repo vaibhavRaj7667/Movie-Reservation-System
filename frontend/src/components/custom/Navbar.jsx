@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isadmin, setIsadmin] = useState(true)
+  const [isadmin, setIsadmin] = useState(false)
   const urls = useMemo(() => import.meta.env.VITE_API_URL, []);
   const navigate = useNavigate();
   

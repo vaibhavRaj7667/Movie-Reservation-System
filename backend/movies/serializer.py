@@ -55,3 +55,5 @@ class ShowsSerializer(serializers.ModelSerializer):
             movie = Movies.objects.get(title=movie_data['title'])
             validated_data['movie'] = movie # customize the validated_data(incoming data) to pass the movie object instead of its title
         return super().create(validated_data)
+    
+
